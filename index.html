@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كأس العالم 2026 - نقطة على خفيف</title>
+    <!-- استدعاء خط تجول -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- المتغيرات للوضع الليلي الفخم (الافتراضي) --- */
+        :root {
+            --bg-body: #050507;
+            --bg-container: rgba(22, 24, 28, 0.85);
+            --bg-card: #13151a;
+            
+            /* ألوان المؤقت */
+            --timer-bg: #1a1d24;
+            --timer-num: #ffffff;
+            --timer-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+            --timer-border: rgba(255, 255, 255, 0.05);
+            
+            --gold-gradient: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            --gold-solid: #c59b27;
+            
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --shadow-main: rgba(0, 0, 0, 0.6);
+            --top-bar-bg: rgba(10, 10, 12, 0.9);
+        }
+
+        /* --- المتغيرات للوضع الفاتح الأنيق --- */
+        body.light-mode {
+            --bg-body: #f4f6f9;
+            --bg-container: rgba(255, 255, 255, 0.95);
+            --bg-card: #ffffff;
+            
+            /* ألوان المؤقت */
+            --timer-bg: #ffffff;
+            --timer-num: #0f172a;
+            --timer-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+            --timer-border: rgba(0, 0, 0, 0.04);
+            
+            --gold-gradient: linear-gradient(135deg, #A67C00, #BF953F, #D4AF37, #AA771C);
+            --gold-solid: #B38728;
+            
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border-color: rgba(179, 135, 40, 0.3);
+            --shadow-main: rgba(0, 0, 0, 0.08);
+            --top-bar-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Tajawal', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 100px 15px 50px 15px;
+        }
+
+        /* --- الشريط العلوي --- */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: var(--top-bar-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .top-bar-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- أيقونات التبديل العصرية --- */
+        .theme-toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--gold-solid);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border-radius: 50%;
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+            transform: scale(1.1);
+        }
+
+        .theme-toggle-btn svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        body.light-mode #sun-icon { display: none; }
+        body.light-mode #moon-icon { display: block; }
+        body:not(.light-mode) #sun-icon { display: block; }
+        body:not(.light-mode) #moon-icon { display: none; }
+
+        /* --- الحاوية الرئيسية --- */
+        .main-wrapper {
+            background: var(--bg-container);
+            padding: 50px 30px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px var(--shadow-main);
+            max-width: 1000px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .main-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            height: 4px;
+            background: var(--gold-gradient);
+            border-radius: 0 0 10px 10px;
+        }
+
+        /* --- العناوين --- */
+        .header-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .gold-title {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .sub-title {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 40px;
+        }
+
+        /* --- تصميم المؤقت في سطر واحد --- */
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            direction: rtl;
+            flex-wrap: nowrap; /* إجبار البقاء في سطر واحد دائماً */
+        }
+
+        .timer-box {
+            background: var(--timer-bg);
+            padding: 25px 20px 20px 20px;
+            border-radius: 22px;
+            min-width: 120px;
+            text-align: center;
+            border: 1px solid var(--timer-border);
+            box-shadow: var(--timer-shadow);
+            border-bottom: 5px solid var(--gold-solid);
+        }
+
+        .timer-box .num {
+            display: block;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--timer-num);
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .timer-box .lbl {
+            display: block;
+            font-size: 1.2rem;
+            color: var(--gold-solid);
+            font-weight: 800;
+        }
+
+        /* --- فاصل العناوين في سطر واحد --- */
+        .divider {
+            text-align: center;
+            margin: 70px 0 50px 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+        }
+
+        .divider span {
+            background: var(--bg-container);
+            padding: 12px 35px;
+            border: 1px solid var(--border-color);
+            border-radius: 40px;
+            color: var(--gold-solid);
+            font-weight: 800;
+            font-size: 1.3rem;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            white-space: nowrap; /* إجبار بقاء الفاصل بسطر واحد */
+        }
+
+        /* --- كروت المباريات --- */
+        .matches-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .match-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 40px 30px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px var(--shadow-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 35px;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold-solid);
+        }
+
+        .teams-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .team-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 45%;
+        }
+
+        .team-name {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--text-main);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .team-flag {
+            font-size: 3.5rem;
+            line-height: 1;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+        }
+
+        .vs-badge {
+            font-size: 1.6rem;
+            color: var(--gold-solid);
+            font-weight: 700;
+            font-style: italic;
+            width: 10%;
+            text-align: center;
+        }
+
+        .datetime-box {
+            background: var(--bg-body);
+            padding: 20px 40px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .datetime-box .time {
+            color: var(--gold-solid);
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .datetime-box .date {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .status-msg {
+            color: #10b981;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-align: center;
+            display: none;
+            width: 100%;
+            padding: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 16px;
+            border: 1px dashed #10b981;
+        }
+
+        /* --- الفوتر --- */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        footer span {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            font-size: 1.4rem;
+        }
+
+        /* --- استجابة الشاشات للهواتف (الحفاظ المطلق على سطر واحد) --- */
+        @media (max-width: 768px) {
+            .top-bar { padding: 0 20px; }
+            .main-wrapper { padding: 40px 15px; }
+            .header-section h1 { font-size: 2.2rem; }
+            .sub-title { font-size: 1.1rem; }
+            
+            .timer-container { gap: 8px; flex-wrap: nowrap; }
+            .timer-box { min-width: 85px; padding: 15px 10px 12px 10px; border-radius: 16px; }
+            .timer-box .num { font-size: 2.2rem; margin-bottom: 8px; }
+            .timer-box .lbl { font-size: 1rem; }
+            
+            .divider span { font-size: 1.1rem; padding: 8px 18px; white-space: nowrap; }
+            
+            .team-name { font-size: 1.3rem; }
+            .team-flag { font-size: 2.5rem; }
+            .vs-badge { font-size: 1.2rem; }
+            .datetime-box { padding: 15px 10px; }
+            .datetime-box .time { font-size: 1.4rem; }
+            .top-bar-title { display: none; }
+        }
+
+        @media (max-width: 400px) {
+            .timer-container { gap: 5px; }
+            .timer-box { min-width: 72px; padding: 12px 5px 10px 5px; }
+            .timer-box .num { font-size: 1.8rem; }
+            .timer-box .lbl { font-size: 0.9rem; }
+            .team-name { font-size: 1.1rem; }
+            .divider span { font-size: 0.9rem; padding: 6px 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <div class="top-bar-title">نقطة على خفيف</div>
+        
+        <button class="theme-toggle-btn" id="themeBtn" title="تبديل المظهر">
+            <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <div class="main-wrapper">
+        
+        <!-- المؤقت الرئيسي -->
+        <div class="header-section">
+            <h1 class="gold-title">نقطة على خفيف</h1>
+            <div class="sub-title">العد التنازلي لانطلاق كأس العالم 2026</div>
+            
+            <div class="timer-container" id="main-countdown">
+                <div class="timer-box">
+                    <span class="num" id="main-d">00</span>
+                    <span class="lbl">يوم</span>
+                </div>
+                <div class="timer-box">
+                    <span class="num" id="main-h">00</span>
+                    <span class="lbl">ساعة</span>
+                </div>
+                <div class="timer-box">
+                    <span class="num" id="main-m">00</span>
+                    <span class="lbl">دقيقة</span>
+                </div>
+            </div>
+            <div class="status-msg" id="main-status" style="margin-top: 20px;">🏆 انطلقت المتعة الكروية 🏆</div>
+        </div>
+
+        <!-- قسم مباريات السعودية -->
+        <div class="divider">
+            <span>مباريات المنتخب السعودي</span>
+        </div>
+        <div class="matches-grid" id="saudi-matches-container"></div>
+
+        <!-- قسم مباريات الأردن المأخوذة من صورة 662491.png -->
+        <div class="divider">
+            <span>مباريات المنتخب الأردني</span>
+        </div>
+        <div class="matches-grid" id="jordan-matches-container"></div>
+
+        <!-- الفوتر -->
+        <footer>
+            تصميم وبرمجة <span>NMO</span>
+        </footer>
+
+    </div>
+
+    <script>
+        // التبديل بين الوضع الليلي والفاتح
+        const themeBtn = document.getElementById('themeBtn');
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+        });
+
+        const worldCupStartDate = new Date("2026-06-11T22:00:00").getTime();
+
+        // مباريات السعودية
+        const saudiMatches = [
+            { id: "sa-1", team1: { name: "السعودية", flag: "🇸🇦" }, team2: { name: "أوروغواي", flag: "🇺🇾" }, dateStr: "2026-06-16T01:00:00" },
+            { id: "sa-2", team1: { name: "إسبانيا", flag: "🇪🇸" }, team2: { name: "السعودية", flag: "🇸🇦" }, dateStr: "2026-06-21T19:00:00" },
+            { id: "sa-3", team1: { name: "الرأس الأخضر", flag: "🇨🇻" }, team2: { name: "السعودية", flag: "🇸🇦" }, dateStr: "2026-06-27T03:00:00" }
+        ];
+
+        // مباريات الأردن مأخوذة من الصورة 662491.png
+        const jordanMatches = [
+            { id: "jo-1", team1: { name: "النمسا", flag: "🇦🇹" }, team2: { name: "الأردن", flag: "🇯🇴" }, dateStr: "2026-06-17T07:00:00" },
+            { id: "jo-2", team1: { name: "الأردن", flag: "🇯🇴" }, team2: { name: "الجزائر", flag: "🇩🇿" }, dateStr: "2026-06-23T06:00:00" },
+            { id: "jo-3", team1: { name: "الأردن", flag: "🇯🇴" }, team2: { name: "الأرجنتين", flag: "🇦🇷" }, dateStr: "2026-06-28T05:00:00" }
+        ];
+
+        const hijriOptions = { calendar: 'islamic-umalqura', day: 'numeric', month: 'long', year: 'numeric' };
+        const gregoOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
+
+        // دالة لإنشاء الكروت وحقنها
+        function renderMatches(matchesArray, targetContainerId) {
+            const targetContainer = document.getElementById(targetContainerId);
+            matchesArray.forEach(match => {
+                const matchDate = new Date(match.dateStr);
+                const hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', hijriOptions).format(matchDate);
+                const gregoDate = new Intl.DateTimeFormat('ar-SA', gregoOptions).format(matchDate);
+                const matchTime = new Intl.DateTimeFormat('ar-SA', timeOptions).format(matchDate);
+
+                const cardHTML = `
+                    <div class="match-card">
+                        <div class="teams-row">
+                            <div class="team-col">
+                                <span class="team-name">${match.team1.name}</span>
+                                <span class="team-flag">${match.team1.flag}</span>
+                            </div>
+                            <div class="vs-badge">VS</div>
+                            <div class="team-col">
+                                <span class="team-name">${match.team2.name}</span>
+                                <span class="team-flag">${match.team2.flag}</span>
+                            </div>
+                        </div>
+
+                        <div class="datetime-box">
+                            <div class="time">${matchTime}</div>
+                            <div class="date">${gregoDate}<br>${hijriDate}</div>
+                        </div>
+                        
+                        <div class="timer-container" id="timer-${match.id}">
+                            <div class="timer-box">
+                                <span class="num" id="d-${match.id}">00</span>
+                                <span class="lbl">يوم</span>
+                            </div>
+                            <div class="timer-box">
+                                <span class="num" id="h-${match.id}">00</span>
+                                <span class="lbl">ساعة</span>
+                            </div>
+                            <div class="timer-box">
+                                <span class="num" id="m-${match.id}">00</span>
+                                <span class="lbl">دقيقة</span>
+                            </div>
+                        </div>
+                        <div class="status-msg" id="status-${match.id}">⚽ بدأت المباراة! بالتوفيق ⚽</div>
+                    </div>
+                `;
+                targetContainer.innerHTML += cardHTML;
+            });
+        }
+
+        renderMatches(saudiMatches, 'saudi-matches-container');
+        renderMatches(jordanMatches, 'jordan-matches-container');
+
+        const padZero = (num) => num < 10 ? "0" + num : num;
+
+        // دالة لتحديث عداد مصفوفة معينة
+        function updateCountdownArray(matchesArray) {
+            const now = new Date().getTime();
+            matchesArray.forEach(match => {
+                const matchDistance = new Date(match.dateStr).getTime() - now;
+                if (matchDistance > 0) {
+                    document.getElementById(`d-${match.id}`).innerText = padZero(Math.floor(matchDistance / (1000 * 60 * 60 * 24)));
+                    document.getElementById(`h-${match.id}`).innerText = padZero(Math.floor((matchDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+                    document.getElementById(`m-${match.id}`).innerText = padZero(Math.floor((matchDistance % (1000 * 60 * 60)) / (1000 * 60)));
+                } else {
+                    document.getElementById(`timer-${match.id}`).style.display = "none";
+                    document.getElementById(`status-${match.id}`).style.display = "block";
+                }
+            });
+        }
+
+        // تحديث المؤقتات الدورية
+        setInterval(() => {
+            const now = new Date().getTime();
+
+            // البطولة الرئيسية
+            const mainDistance = worldCupStartDate - now;
+            if (mainDistance > 0) {
+                document.getElementById('main-d').innerText = padZero(Math.floor(mainDistance / (1000 * 60 * 60 * 24)));
+                document.getElementById('main-h').innerText = padZero(Math.floor((mainDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+                document.getElementById('main-m').innerText = padZero(Math.floor((mainDistance % (1000 * 60 * 60)) / (1000 * 60)));
+            } else {
+                document.getElementById('main-countdown').style.display = "none";
+                document.getElementById('main-status').style.display = "block";
+            }
+
+            // تحديث مؤقتات المجموعتين
+            updateCountdownArray(saudiMatches);
+            updateCountdownArray(jordanMatches);
+        }, 1000);
+    </script>
+</body>
+</html>
